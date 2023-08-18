@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>值班看板</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* 設定背景為黑色 */
+        body {
+            background-color: black;
+            color: white;
+            margin: 0;
+        }
+
+        /* 頁面置中 */
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+        }
+
+        /* 共用樣式 */
+        .title1 {
+            font-size: 30px;
+            text-align: center;
+            margin-top: 3%;
+            font-family: DFKai-sb;
+        }
+
+        .title2 {
+            font-size: 40px;
+            text-align: center;
+            margin-top: 3%;
+            font-family: DFKai-sb;
+        }
+
+        .info {
+            font-size: 40px;
+            text-align: center;
+            margin-top: 10%;
+            font-family: DFKai-sb;
+        }
+
+        .large {
+            font-size: 100px;
+        }
+
+        .medium {
+            font-size: 30px;
+        }
+
+        .timer {
+            font-size: 40px;
+            text-align: center;
+            margin-top: 5%;
+        }
+
+        /* 職位的欄位樣式 */
+        .position-group {
+            display: flex;
+            justify-content: space-evenly;
+            margin-top: 10%;
+            width: 80%;
+            font-family: DFKai-sb;
+        }
+
+        .position {
+            flex: none;
+            text-align: center;
+            width: 30%;
+        }
+
+        /* 人員的欄位樣式 */
+        .person-group {
+            display: flex;
+            justify-content: space-evenly;
+            width: 80%;
+        }
+
+        .person-field {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .personIn {
+            flex: none;
+            text-align: center;
+            width: 30%;
+        }
+
+        /* 隱藏輸入框 */
+        .person-field input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            border: none;
+            outline: none;
+            text-align: center;
+            font-family: DFKai-sb;
+        }
+
+        /* RWD: 調整各元素在不同螢幕大小下的顯示位置 */
+        @media (max-width: 768px) {
+            .info {
+                font-size: 35px;
+                margin-top: 5%;
+            }
+
+            .large {
+                font-size: 100px;
+            }
+
+            .timer {
+                font-size: 30px;
+                margin-top: 2%;
+            }
+
+            .medium {
+                font-size: 30px;
+                color: red;
+            }
+            
+            .position {
+                font-size: 25px;
+                width: 30%;
+            }
+
+            .personIn {
+                font-size: 25px;
+                width: 30%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <!-- 顯示分局 -->
+        <div class="title1">臺中市政府警察局和平分局</div>
+        <!-- 顯示單位 -->
+        <div class="title2">偵查隊值勤牌</div>
+        <!-- 顯示月份 -->
+        <div class="info" id="month"></div>
+        <!-- 顯示日期 -->
+        <div class="large" id="date"></div>
+        <!-- Timer -->
+        <div class="timer" id="timer"></div>
+
+        <!-- 顯示星期 -->
+        <div class="info medium" id="weekday"></div>
+        
+        <!-- 值班人員 -->
+        <div class="position-group">
+            <div class="position">值日小隊長</div>
+            <div class="position">值日偵查佐</div>
+            <div class="position">值日勘查員</div>
+        </div>
+
+        <div class="person-group">
+            <div class="person-field">
+                <label for="personA">personA</label>
+                <input class="personIn" type="text" id="personA" value="PersonA">
+            </div>
+            <div class="person-field">
+                <label for="personB">personB</label>
+                <input class="personIn" type="text" id="personB" value="PersonB">
+            </div>
+            <div class="person-field">
+                <label for="personC">personC</label>
+                <input class="personIn" type="text" id="personC" value="PersonC">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 獲取日期元素
+        var monthElement = document.getElementById("month");
+        var dateElement = document.getElementById("date");
+        // 更新日期
+        function updateDate() {
+            var now = new Date();
+            var taipeiDate = now.toLocaleDateString("zh-TW", { year: 'numeric', month: '2-digit', day: '2-digit' });
+            now = new Date(taipeiDate);
+            var year = now.getFullYear().toString().padStart(2, '0');
+            var month = (now.getMonth()+1).toString();
+            var day = now.getDate().toString().padStart(2, '0');
+            
+            monthElement.textContent = (year-1911) + ' 年 ' + (month) + ' 月';
+            dateElement.textContent = day;
+        }
+
+        // 更新星期
+        function updateWeekday() {
+            var now = new Date();
+            var days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            var weekday = days[now.getDay()];
+            document.getElementById("weekday").textContent = weekday;
+        }
+
+        // 更新Timer的時間
+        function updateTimer() {
+            var now = new Date();
+            var hours = now.getHours().toString().padStart(2, "0");
+            var minutes = now.getMinutes().toString().padStart(2, "0");
+            var seconds = now.getSeconds().toString().padStart(2, "0");
+            document.getElementById("timer").textContent = hours + " : " + minutes + " : " + seconds;
+        }
+
+        // 每秒更新一次Timer和日期
+        setInterval(function () {
+            updateDate();
+            updateWeekday();
+            updateTimer();
+        }, 1000);
+
+        // 設定點擊人員時的事件處理函式
+        document.getElementById("personA").addEventListener("input", function () {
+            var personA = document.getElementById("personA").value;
+            document.getElementById("personA").value = personA;
+        });
+
+        document.getElementById("personB").addEventListener("input", function () {
+            var personB = document.getElementById("personB").value;
+            document.getElementById("personB").value = personB;
+        });
+
+        document.getElementById("personC").addEventListener("input", function () {
+            var personC = document.getElementById("personC").value;
+            document.getElementById("personC").value = personC;
+        });
+
+        // 當頁面載入完成後執行
+        window.addEventListener("load", function() {
+        // 獲取position元素的寬度
+        var positionWidth = document.querySelector(".position").offsetWidth;
+        // 獲取所有的person-field元素
+        var personFields = document.querySelectorAll(".person-field");
+        // 設置person-field元素的寬度為position元素的寬度
+        personFields.forEach(function(personField) {
+            personField.style.width = positionWidth + "px";
+        });
+    });
+    </script>
+</body>
+</html>
